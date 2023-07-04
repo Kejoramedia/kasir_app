@@ -17,17 +17,16 @@ def input_angka(prompt):
 def input_item(prompt):
     return input(prompt).upper()
 
-def simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali):
+def simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali, tampilkan_nama_toko=True):
     with open("struk.csv", mode="w", newline="") as file:
         fieldnames = ["Item", "Jumlah", "Harga", "Total Harga"]
         writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writerow({"Item": "KEJORA SHOP"})
+        writer.writerow({"Item": "KEJORA SHOP"} if tampilkan_nama_toko else {})
         writer.writerow({})
         writer.writeheader()
 
         # Tulis header struk
         writer.writerow({"Item": "", "Jumlah": "", "Harga": "", "Total Harga": ""})
-
 
         for belanja in belanjaan:
             jumlah = belanja["jumlah"]
@@ -73,7 +72,8 @@ def transaksi_belanja():
             item = belanja["item"]
             harga = belanja["harga"]
             total_harga = hitung_total_harga(jumlah, harga)
-            print(f"{item.upper().ljust(15)}{format_harga(harga).ljust(10)}{str(jumlah).ljust(5)}{format_harga(total_harga)}")
+            print(
+                f"{item.upper().ljust(15)}{format_harga(harga).ljust(10)}{str(jumlah).ljust(5)}{format_harga(total_harga)}")
         print("---------------------------")
         print(f"Total Belanja:\t{format_harga(total_belanja)}")
 
@@ -82,12 +82,15 @@ def transaksi_belanja():
 
         print(f"Kembali: {format_harga(kembali)}")
 
-        simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali)
+        tampilkan_nama_toko = __name__ == '__main__'
+        simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali, tampilkan_nama_toko)
 
         print("\nStruk telah disimpan ke dalam file 'struk.csv'.\n")
-        print("Terima kasih telah berbelanja di Kejora Shop!")
+        if tampilkan_nama_toko:
+            print("Terima kasih telah berbelanja di Kejora Shop!")
     else:
         print("Belanjaan kosong. Transaksi dibatalkan.")
 
 if __name__ == '__main__':
     transaksi_belanja()
+
