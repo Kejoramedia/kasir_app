@@ -1,5 +1,5 @@
-# Mengimpor modul csv
 import csv
+import datetime
 
 # Menghitung total harga
 def hitung_total_harga(jumlah, harga):
@@ -22,13 +22,27 @@ def input_angka(prompt):
 def input_item(prompt):
     return input(prompt).upper()
 
+# Menerima input nama panggilan CS
+def input_cs_name(prompt):
+    while True:
+        nama_cs = input(prompt)
+        if nama_cs.isalpha():
+            return nama_cs.upper()
+        else:
+            print("Format input salah. Masukkan nama panggilan CS menggunakan huruf saja.")
+
+# Membuat ID Transaksi secara otomatis
+def buat_id_transaksi(nama_cs):
+    tanggal = datetime.date.today().strftime("%y%m%d")
+    return f"{nama_cs}-{tanggal}"
+
 # Menyimpan struk belanja ke dalam file CSV
-def simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali):
-    with open("struk.csv", mode="w", newline="") as file:
+def simpan_struk_ke_csv(nama_file, belanjaan, total_belanja, uang_tunai, kembali):
+    with open(nama_file, mode="w", newline="") as file:
         fieldnames = ["Item", "Jumlah", "Harga", "Total Harga"]
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writerow({"Item": "KEJORA SHOP"})
-        writer.writerow({})
+        writer.writerow({"Item": nama_file})
         writer.writeheader()
 
         # Tulis header struk
@@ -56,8 +70,11 @@ def simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali):
 def transaksi_belanja():
     belanjaan = []
     total_belanja = 0
-
     print("Kejora Shop")
+
+    # Input nama panggilan CS
+    nama_cs = input_cs_name("Nama panggilan CS: ")
+
     while True:
         item = input_item('Item (Ketik "0" untuk menyelesaikan transaksi): ')
 
@@ -80,7 +97,8 @@ def transaksi_belanja():
             item = belanja["item"]
             harga = belanja["harga"]
             total_harga = hitung_total_harga(jumlah, harga)
-            print(f"{item.upper().ljust(15)}{format_harga(harga).ljust(10)}{str(jumlah).ljust(5)}{format_harga(total_harga)}")
+            print(
+                f"{item.upper().ljust(15)}{format_harga(harga).ljust(10)}{str(jumlah).ljust(5)}{format_harga(total_harga)}")
         print("---------------------------")
         print(f"Total Belanja:\t{format_harga(total_belanja)}")
 
@@ -89,12 +107,19 @@ def transaksi_belanja():
 
         print(f"Kembali: {format_harga(kembali)}")
 
-        simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali)
+        # Membuat ID Transaksi
+        id_transaksi = buat_id_transaksi(nama_cs)
 
-        print("\nStruk telah disimpan ke dalam file 'struk.csv'.\n")
+        # Membuat nama file struk
+        nama_file = f"{id_transaksi}.csv"
+
+        simpan_struk_ke_csv(nama_file, belanjaan, total_belanja, uang_tunai, kembali)
+
+        print("\nStruk telah disimpan ke dalam file '{nama_file}'.\n")
         print("Terima kasih telah berbelanja di Kejora Shop!")
     else:
         print("Belanjaan kosong. Transaksi dibatalkan.")
+
 
 if __name__ == '__main__':
     transaksi_belanja()
