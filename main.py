@@ -1,11 +1,15 @@
+# Mengimpor modul csv
 import csv
 
+# Menghitung total harga
 def hitung_total_harga(jumlah, harga):
     return jumlah * harga
 
+# Mengubah harga menjadi format string yang sesuai dengan mata uang rupiah
 def format_harga(harga):
     return f"Rp.{harga:,.0f}"
 
+# Menerima input angka (hanya angka bulat yang valid)
 def input_angka(prompt):
     while True:
         try:
@@ -14,9 +18,11 @@ def input_angka(prompt):
         except ValueError:
             print("Input harus berupa angka bulat. Silakan coba lagi.")
 
+# Menerima input item
 def input_item(prompt):
     return input(prompt).upper()
 
+# Menyimpan struk belanja ke dalam file CSV
 def simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali):
     with open("struk.csv", mode="w", newline="") as file:
         fieldnames = ["Item", "Jumlah", "Harga", "Total Harga"]
@@ -28,7 +34,7 @@ def simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali):
         # Tulis header struk
         writer.writerow({"Item": "", "Jumlah": "", "Harga": "", "Total Harga": ""})
 
-
+        # Tulis setiap item belanja ke dalam file CSV
         for belanja in belanjaan:
             jumlah = belanja["jumlah"]
             item = belanja["item"]
@@ -36,6 +42,7 @@ def simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali):
             total_harga = hitung_total_harga(jumlah, harga)
             writer.writerow({"Item": item, "Jumlah": jumlah, "Harga": format_harga(harga), "Total Harga": format_harga(total_harga)})
 
+        # Tulis total belanja, uang tunai, dan kembalian ke dalam file CSV
         writer.writerow({})
         writer.writerow({"Item": "TOTAL BELANJA", "Jumlah": "", "Harga": "", "Total Harga": format_harga(total_belanja)})
         writer.writerow({"Item": "UANG TUNAI", "Jumlah": "", "Harga": "", "Total Harga": format_harga(uang_tunai)})
@@ -45,7 +52,7 @@ def simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali):
         # Tulis footer struk
         writer.writerow({"Item": "TERIMAKASIH DAN SELAMAT BERBELANJA LAGI", "Jumlah": "", "Harga": "", "Total Harga": ""})
 
-
+# Fungsi untuk melakukan transaksi belanja
 def transaksi_belanja():
     belanjaan = []
     total_belanja = 0
