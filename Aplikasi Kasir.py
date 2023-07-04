@@ -21,7 +21,13 @@ def simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali):
     with open("struk.csv", mode="w", newline="") as file:
         fieldnames = ["Item", "Jumlah", "Harga", "Total Harga"]
         writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writerow({"Item": "KEJORA SHOP"})
+        writer.writerow({})
         writer.writeheader()
+
+        # Tulis header struk
+        writer.writerow({"Item": "", "Jumlah": "", "Harga": "", "Total Harga": ""})
+
 
         for belanja in belanjaan:
             jumlah = belanja["jumlah"]
@@ -34,6 +40,10 @@ def simpan_struk_ke_csv(belanjaan, total_belanja, uang_tunai, kembali):
         writer.writerow({"Item": "TOTAL BELANJA", "Jumlah": "", "Harga": "", "Total Harga": format_harga(total_belanja)})
         writer.writerow({"Item": "UANG TUNAI", "Jumlah": "", "Harga": "", "Total Harga": format_harga(uang_tunai)})
         writer.writerow({"Item": "KEMBALIAN", "Jumlah": "", "Harga": "", "Total Harga": format_harga(kembali)})
+        writer.writerow({})
+
+        # Tulis footer struk
+        writer.writerow({"Item": "TERIMAKASIH DAN SELAMAT BERBELANJA LAGI", "Jumlah": "", "Harga": "", "Total Harga": ""})
 
 
 def transaksi_belanja():
@@ -81,4 +91,3 @@ def transaksi_belanja():
 
 if __name__ == '__main__':
     transaksi_belanja()
-
