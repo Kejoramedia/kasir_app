@@ -1,15 +1,14 @@
+import pandas as pd
+
 def hitung_total_harga(jumlah, harga):
     return jumlah * harga
-
 
 def format_harga(harga):
     return f"Rp.{harga:,.0f}"
 
-
 def cetak_struk(jumlah, item, harga):
     total_harga = hitung_total_harga(jumlah, harga)
     return f"{jumlah} {item}\t\t{format_harga(harga)}\t\t{format_harga(total_harga)}"
-
 
 if __name__ == '__main__':
     belanjaan = []
@@ -38,32 +37,37 @@ if __name__ == '__main__':
 
     if belanjaan:
         total_belanja = 0
+        struk_data = []
 
-        with open("struk.txt", "w") as file:
-            for belanja in belanjaan:
-                jumlah = belanja['jumlah']
-                item = belanja['item']
-                harga = belanja['harga']
+        for belanja in belanjaan:
+            jumlah = belanja['jumlah']
+            item = belanja['item']
+            harga = belanja['harga']
 
-                total_harga = hitung_total_harga(jumlah, harga)
-                total_belanja += total_harga
+            total_harga = hitung_total_harga(jumlah, harga)
+            total_belanja += total_harga
 
-                struk = cetak_struk(jumlah, item, harga)
-                print(struk, file=file)
+            struk = cetak_struk(jumlah, item, harga)
+            struk_data.append([jumlah, item, format_harga(harga), format_harga(total_harga)])
 
-            print("-----------------------------------------------", file=file)
-            print(f"\t\tTotal Belanja\t{format_harga(total_belanja)}", file=file)
+        struk_data.append(["", "Total Belanja", "", format_harga(total_belanja)])
 
-            while True:
-                try:
-                    uang_tunai = int(input("\nUang Tunai: Rp."))
-                    break
-                except ValueError:
-                    print("Uang tunai harus dalam bentuk angka. Silakan coba lagi.")
+        df = pd.DataFrame(struk_data, columns=["Jumlah", "Item", "Harga", "Total Harga"])
+        writer = pd.ExcelWriter("struk.xlsx", engine="openpyxl")
+        df.to_excel(writer, index=False, sheet_name="Struk")
+        writer.book.save("struk.xlsx")  # Menggunakan metode .save() pada writer.book
+        writer.close()  # Menutup objek writer
 
-            kembali = uang_tunai - total_belanja
+        while True:
+            try:
+                uang_tunai = int(input("\nUang Tunai: Rp."))
+                break
+            except ValueError:
+                print("Uang tunai harus dalam bentuk angka. Silakan coba lagi.")
 
-            print(f"\n\t\tUang Tunai\t{format_harga(uang_tunai)}", file=file)
-            print(f"\n\t\tKembali\t\t{format_harga(kembali)}", file=file)
+        kembali = uang_tunai - total_belanja
+
+        print(f"\n\t\tUang Tunai\t{format_harga(uang_tunai)}")
+        print(f"\n\t\tKembali\t\t{format_harga(kembali)}")
     else:
         print("Belanjaan kosong. Transaksi dibatalkan.")
