@@ -1,14 +1,10 @@
-import pandas as pd
+import csv
 
 def hitung_total_harga(jumlah, harga):
     return jumlah * harga
 
 def format_harga(harga):
     return f"Rp.{harga:,.0f}"
-
-def cetak_struk(jumlah, item, harga):
-    total_harga = hitung_total_harga(jumlah, harga)
-    return f"{jumlah} {item}\t\t{format_harga(harga)}\t\t{format_harga(total_harga)}"
 
 if __name__ == '__main__':
     belanjaan = []
@@ -37,8 +33,9 @@ if __name__ == '__main__':
 
     if belanjaan:
         total_belanja = 0
-        struk_data = []
 
+        print("\nStruk Belanja:")
+        print("-----------------------------------------------")
         for belanja in belanjaan:
             jumlah = belanja['jumlah']
             item = belanja['item']
@@ -47,16 +44,10 @@ if __name__ == '__main__':
             total_harga = hitung_total_harga(jumlah, harga)
             total_belanja += total_harga
 
-            struk = cetak_struk(jumlah, item, harga)
-            struk_data.append([jumlah, item, format_harga(harga), format_harga(total_harga)])
+            print(f"{jumlah} {item}\t\t{format_harga(harga)}\t\t{format_harga(total_harga)}")
 
-        struk_data.append(["", "Total Belanja", "", format_harga(total_belanja)])
-
-        df = pd.DataFrame(struk_data, columns=["Jumlah", "Item", "Harga", "Total Harga"])
-        writer = pd.ExcelWriter("struk.xlsx", engine="openpyxl")
-        df.to_excel(writer, index=False, sheet_name="Struk")
-        writer.book.save("struk.xlsx")  # Menggunakan metode .save() pada writer.book
-        writer.close()  # Menutup objek writer
+        print("-----------------------------------------------")
+        print(f"Total Belanja:\t{format_harga(total_belanja)}")
 
         while True:
             try:
@@ -67,7 +58,24 @@ if __name__ == '__main__':
 
         kembali = uang_tunai - total_belanja
 
-        print(f"\n\t\tUang Tunai\t{format_harga(uang_tunai)}")
-        print(f"\n\t\tKembali\t\t{format_harga(kembali)}")
+        print(f"Kembali: {format_harga(kembali)}")
+
+        # Menyimpan struk ke file CSV
+        with open("struk.csv", mode="w", newline="") as file:
+            fieldnames = ["Item", "Jumlah", "Harga", "Total Harga"]
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+
+            writer.writeheader()
+            for belanja in belanjaan:
+                jumlah = belanja["jumlah"]
+                item = belanja["item"]
+                harga = belanja["harga"]
+                total_harga = hitung_total_harga(jumlah, harga)
+                writer.writerow({"Item": item, "Jumlah": jumlah, "Harga": format_harga(harga), "Total Harga": format_harga(total_harga)})
+            writer.writerow({})
+            writer.writerow({"Item": "Total Belanja", "Jumlah": "", "Harga": "", "Total Harga": format_harga(total_belanja)})
+            writer.writerow({"Item": "Uang Tunai", "Jumlah": "", "Harga": "", "Total Harga": format_harga(uang_tunai)})
+            writer.writerow({"Item": "Kembalian", "Jumlah": "", "Harga": "", "Total Harga": format_harga(kembali)})
+
     else:
         print("Belanjaan kosong. Transaksi dibatalkan.")
