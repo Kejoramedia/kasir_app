@@ -128,6 +128,5 @@ def transaksi_belanja():
     else:
         print("Belanjaan kosong. Transaksi dibatalkan.")
 
-
 if __name__ == '__main__':
     transaksi_belanja()
