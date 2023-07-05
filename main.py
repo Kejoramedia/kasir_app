@@ -48,33 +48,27 @@ def buat_id_transaksi(nama_cs, counter):
 # Menyimpan struk belanja ke dalam file CSV
 def simpan_struk_ke_csv(nama_file, belanjaan, total_belanja, uang_tunai, kembali):
     with open(nama_file, mode="w", newline="") as file:
-        fieldnames = ["Item", "Jumlah", "Harga", "Total Harga"]
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writerow({"Item": "KEJORA SHOP"})
-        writer.writerow({"Item": nama_file})
-        writer.writeheader()
+        writer = csv.writer(file)
 
-        # Tulis header struk
-        writer.writerow({"Item": "", "Jumlah": "", "Harga": "", "Total Harga": ""})
+        writer.writerow(["KEJORA SHOP"])
+        writer.writerow([nama_file.split('.')[0]])
+        writer.writerow([])
+        writer.writerow(["ITEM", "JUMLAH", "HARGA", "TOTAL HARGA"])
+        writer.writerow([])
 
-        # Tulis setiap item belanja ke dalam file CSV
         for belanja in belanjaan:
             jumlah = belanja["jumlah"]
             item = belanja["item"]
             harga = belanja["harga"]
             total_harga = hitung_total_harga(jumlah, harga)
-            writer.writerow({"Item": item, "Jumlah": jumlah, "Harga": format_harga(harga), "Total Harga": format_harga(total_harga)})
+            writer.writerow([item.upper(), jumlah, format_harga(harga), format_harga(total_harga)])
 
-        # Tulis total belanja, uang tunai, dan kembalian ke dalam file CSV
-        writer.writerow({})
-        writer.writerow({"Item": "TOTAL BELANJA", "Jumlah": "", "Harga": "", "Total Harga": format_harga(total_belanja)})
-        writer.writerow({"Item": "UANG TUNAI", "Jumlah": "", "Harga": "", "Total Harga": format_harga(uang_tunai)})
-        writer.writerow({"Item": "KEMBALIAN", "Jumlah": "", "Harga": "", "Total Harga": format_harga(kembali)})
-        writer.writerow({})
-
-        # Tulis footer struk
-        # Tulis footer struk
-        writer.writerow({"Item": "TERIMAKASIH DAN SELAMAT BERBELANJA LAGI", "Jumlah": "", "Harga": "", "Total Harga": ""})
+        writer.writerow([])
+        writer.writerow(["TOTAL BELANJA", "", "", format_harga(total_belanja)])
+        writer.writerow(["UANG TUNAI", "", "", format_harga(uang_tunai)])
+        writer.writerow(["KEMBALIAN", "", "", format_harga(kembali)])
+        writer.writerow([])
+        writer.writerow(["TERIMAKASIH DAN SELAMAT BERBELANJA LAGI"])
 
 def transaksi_belanja():
     belanjaan = []
@@ -86,7 +80,7 @@ def transaksi_belanja():
     nama_cs = input_cs_name("Nama panggilan CS: ")
 
     # Input counter untuk ID transaksi
-    counter = input_counter("Counter: ")
+    counter = input_counter("No. Transaksi: ")
 
     while True:
         item = input_item('Item (Ketik "0" untuk menyelesaikan transaksi): ')
