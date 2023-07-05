@@ -70,6 +70,7 @@ def simpan_struk_ke_csv(nama_file, belanjaan, total_belanja, uang_tunai, kembali
         writer.writerow([])
         writer.writerow(["TERIMAKASIH DAN SELAMAT BERBELANJA LAGI"])
 
+# Fungsi untuk melakukan transaksi belanja
 def transaksi_belanja():
     belanjaan = []
 
