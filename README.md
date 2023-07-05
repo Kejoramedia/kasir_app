@@ -133,7 +133,8 @@ Berikut adalah langkah-langkah untuk menggunakan Kasir_App ini:
 
 ### Catatan Penting
 
-1. Pastikan Anda telah menginstal Python dan memiliki lingkungan yang mendukung untuk menjalankan aplikasi ini.
+1. Pastikan Anda telah menginstal Python versi 3.11 untuk menjalankan aplikasi ini.
+2. Pastikan ketika menjalankan aplikasi ini melalui CLI, Anda menjalankannya di direktori di mana file aplikasi disimpan.
 2. Perhatikan format yang benar saat memasukkan harga item dan jumlah item (harus berupa angka bulat).
 3. Pastikan nama panggilan CS terdiri dari huruf saja, tanpa angka atau karakter khusus.
 4. Aplikasi akan otomatis membuat ID transaksi dan nama file struk berdasarkan input yang diberikan. Pastikan tidak ada kesalahan dalam input untuk mencegah terjadinya duplikasi ID transaksi.
