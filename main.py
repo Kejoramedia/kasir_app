@@ -31,10 +31,19 @@ def input_cs_name(prompt):
         else:
             print("Format input salah. Masukkan nama panggilan CS menggunakan huruf saja.")
 
+# Menerima input counter untuk ID transaksi
+def input_counter(prompt):
+    while True:
+        counter = input(prompt)
+        if counter.isdigit() and len(counter) == 3:
+            return int(counter)
+        else:
+            print("Input harus dalam bentuk angka 3 digit. Silakan coba lagi.")
+
 # Membuat ID Transaksi secara otomatis
-def buat_id_transaksi(nama_cs):
+def buat_id_transaksi(nama_cs, counter):
     tanggal = datetime.date.today().strftime("%y%m%d")
-    return f"{nama_cs}-{tanggal}"
+    return f"{nama_cs}{tanggal}-{counter:03d}"
 
 # Menyimpan struk belanja ke dalam file CSV
 def simpan_struk_ke_csv(nama_file, belanjaan, total_belanja, uang_tunai, kembali):
@@ -64,16 +73,20 @@ def simpan_struk_ke_csv(nama_file, belanjaan, total_belanja, uang_tunai, kembali
         writer.writerow({})
 
         # Tulis footer struk
+        # Tulis footer struk
         writer.writerow({"Item": "TERIMAKASIH DAN SELAMAT BERBELANJA LAGI", "Jumlah": "", "Harga": "", "Total Harga": ""})
 
-# Fungsi untuk melakukan transaksi belanja
 def transaksi_belanja():
     belanjaan = []
+
     total_belanja = 0
     print("Kejora Shop")
 
     # Input nama panggilan CS
     nama_cs = input_cs_name("Nama panggilan CS: ")
+
+    # Input counter untuk ID transaksi
+    counter = input_counter("Counter: ")
 
     while True:
         item = input_item('Item (Ketik "0" untuk menyelesaikan transaksi): ')
@@ -108,7 +121,7 @@ def transaksi_belanja():
         print(f"Kembali: {format_harga(kembali)}")
 
         # Membuat ID Transaksi
-        id_transaksi = buat_id_transaksi(nama_cs)
+        id_transaksi = buat_id_transaksi(nama_cs, counter)
 
         # Membuat nama file struk
         nama_file = f"{id_transaksi}.csv"
